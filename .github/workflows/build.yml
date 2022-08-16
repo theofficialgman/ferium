@@ -15,7 +15,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04, macos-latest, windows-latest]
+        os: [ubuntu-18.04, macos-latest, windows-latest]
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -34,23 +34,50 @@ jobs:
         with:
           toolchain: stable
       - name: Install Rust for Linux
-        if: matrix.os == 'ubuntu-20.04'
+        if: matrix.os == 'ubuntu-18.04'
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           target: x86_64-pc-windows-gnu
       - name: Install Rust for Linux ARM64
-        if: matrix.os == 'ubuntu-20.04'
+        if: matrix.os == 'ubuntu-18.04'
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           target: aarch64-unknown-linux-gnu
 
       - name: Install Linux dependencies
-        if: matrix.os == 'ubuntu-20.04'
+        if: matrix.os == 'ubuntu-18.04'
         run: |
           sudo apt-get update
-          sudo apt-get install librust-gdk-dev gcc-mingw-w64-x86-64 gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+          mkdir -p /tmp/librust-gtk
+          cd /tmp/librust-gtk
+
+          wget -c http://deb.debian.org/debian/pool/main/r/rust-bitflags/librust-bitflags-dev_1.0.4-1_amd64.deb
+          wget -c http://deb.debian.org/debian/pool/main/r/rust-libc/librust-libc-dev_0.2.48-1_amd64.deb
+          wget -c http://deb.debian.org/debian/pool/main/r/rust-pkg-config/librust-pkg-config-dev_0.3.14-1_amd64.deb
+          wget -c http://deb.debian.org/debian/pool/main/r/rust-winapi-i686-pc-windows-gnu/librust-winapi-i686-pc-windows-gnu-dev_0.4.0-1_amd64.deb
+          wget -c http://deb.debian.org/debian/pool/main/r/rust-winapi-x86-64-pc-windows-gnu/librust-winapi-x86-64-pc-windows-gnu-dev_0.4.0-1_amd64.deb
+          wget -c http://deb.debian.org/debian/pool/main/r/rust-winapi/librust-winapi-dev_0.3.6-1_amd64.deb
+          wget -c http://deb.debian.org/debian/pool/main/r/rust-cairo-sys-rs/librust-cairo-sys-rs-dev_0.7.0-2_amd64.deb
+          wget -c http://deb.debian.org/debian/pool/main/r/rust-cairo-rs/librust-cairo-rs-dev_0.5.0-1_amd64.deb
+          wget -c http://deb.debian.org/debian/pool/main/r/rust-glib-sys/librust-glib-sys-dev_0.7.0-2_amd64.deb
+          wget -c http://deb.debian.org/debian/pool/main/r/rust-gobject-sys/librust-gobject-sys-dev_0.7.0-1_amd64.deb
+          wget -c http://deb.debian.org/debian/pool/main/r/rust-lazy-static/librust-lazy-static-dev_1.2.0-1_amd64.deb
+          wget -c http://deb.debian.org/debian/pool/main/r/rust-glib/librust-glib-dev_0.6.1-1_amd64.deb
+          wget -c http://deb.debian.org/debian/pool/main/r/rust-cairo-sys-rs/librust-cairo-sys-rs+use-glib-dev_0.7.0-2_amd64.deb
+          wget -c http://deb.debian.org/debian/pool/main/r/rust-cairo-rs/librust-cairo-rs+use-glib-dev_0.5.0-1_amd64.deb
+          wget -c http://deb.debian.org/debian/pool/main/r/rust-fragile/librust-fragile-dev_0.3.0-1_amd64.deb
+          wget -c http://deb.debian.org/debian/pool/main/r/rust-gio-sys/librust-gio-sys-dev_0.7.0-1_amd64.deb
+          wget -c http://deb.debian.org/debian/pool/main/r/rust-gdk-pixbuf-sys/librust-gdk-pixbuf-sys-dev_0.7.0-1_amd64.deb
+          wget -c http://deb.debian.org/debian/pool/main/r/rust-gio/librust-gio-dev_0.5.1-2_amd64.deb
+          wget -c http://deb.debian.org/debian/pool/main/r/rust-gdk-pixbuf/librust-gdk-pixbuf-dev_0.5.0-2_amd64.deb
+          wget -c http://deb.debian.org/debian/pool/main/r/rust-pango-sys/librust-pango-sys-dev_0.7.0-1_amd64.deb
+          wget -c http://deb.debian.org/debian/pool/main/r/rust-gdk-sys/librust-gdk-sys-dev_0.7.0-1_amd64.deb
+          wget -c http://deb.debian.org/debian/pool/main/r/rust-pango/librust-pango-dev_0.5.0-1_amd64.deb
+          wget -c http://deb.debian.org/debian/pool/main/r/rust-gdk/librust-gdk-dev_0.9.0-1_amd64.deb
+
+          sudo apt-get install /tmp/librust-gtk/*.deb gcc-mingw-w64-x86-64 gcc-aarch64-linux-gnu g++-aarch64-linux-gnu 
 
       - name: Lint code
         run: just lint
@@ -69,7 +96,7 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: just build-win
       - name: Build Linux
-        if: matrix.os == 'ubuntu-20.04'
+        if: matrix.os == 'ubuntu-18.04'
         run: |
           just build-linux-nogui
           just build-linux-gtk
