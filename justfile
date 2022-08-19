@@ -33,42 +33,42 @@ build-win-gnu:
 build-linux-gtk:
     rm -f out/ferium-linux-gnu-gtk.zip
     mkdir -p out
-    cargo build --target=x86_64-unknown-linux-gnu --release
+    RUSTFLAGS='-C target-feature=+crt-static' cargo build --target=x86_64-unknown-linux-gnu --release
     zip -r out/ferium-linux-gnu-gtk.zip -j target/x86_64-unknown-linux-gnu/release/ferium
 
 # Build for GNU Linux with an XDG backend
 build-linux-xdg:
     rm -f out/ferium-linux-gnu-xdg.zip
     mkdir -p out
-    cargo build --target=x86_64-unknown-linux-gnu --release --no-default-features --features xdg
+    RUSTFLAGS='-C target-feature=+crt-static' cargo build --target=x86_64-unknown-linux-gnu --release --no-default-features --features xdg
     zip -r out/ferium-linux-gnu-xdg.zip -j target/x86_64-unknown-linux-gnu/release/ferium
 
 # Build for GNU Linux without a GUI backend
 build-linux-nogui:
     rm -f out/ferium-linux-gnu-nogui.zip
     mkdir -p out
-    cargo build --target=x86_64-unknown-linux-gnu --release --no-default-features
+    RUSTFLAGS='-C target-feature=+crt-static' cargo build --target=x86_64-unknown-linux-gnu --release --no-default-features
     zip -r out/ferium-linux-gnu-nogui.zip -j target/x86_64-unknown-linux-gnu/release/ferium
 
 # Build for GNU Linux ARM64 with a GTK backend
 build-linux-arm64-gtk:
     rm -f out/ferium-linux-gnu-arm64-gtk.zip
     mkdir -p out
-    CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc cargo build --target=aarch64-unknown-linux-gnu --release
+    RUSTFLAGS='-C target-feature=+crt-static' CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc cargo build --target=aarch64-unknown-linux-gnu --release
     zip -r out/ferium-linux-gnu-arm64-gtk.zip -j target/aarch64-unknown-linux-gnu/release/ferium
 
 # Build for GNU Linux ARM64 with an XDG backend
 build-linux-arm64-xdg:
     rm -f out/ferium-linux-gnu-arm64-xdg.zip
     mkdir -p out
-    CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc cargo build --target=aarch64-unknown-linux-gnu --release --no-default-features --features xdg
+    RUSTFLAGS='-C target-feature=+crt-static' CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc cargo build --target=aarch64-unknown-linux-gnu --release --no-default-features --features xdg
     zip -r out/ferium-linux-gnu-arm64-xdg.zip -j target/aarch64-unknown-linux-gnu/release/ferium
 
 # Build for GNU Linux ARM64 without a GUI backend
 build-linux-arm64-nogui:
     rm -f out/ferium-linux-gnu-arm64-nogui.zip
     mkdir -p out
-    CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc cargo build --target=aarch64-unknown-linux-gnu --release --no-default-features
+    RUSTFLAGS='-C target-feature=+crt-static' CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc cargo build --target=aarch64-unknown-linux-gnu --release --no-default-features
     zip -r out/ferium-linux-gnu-arm64-nogui.zip -j target/aarch64-unknown-linux-gnu/release/ferium
 
 # Run clippy lints
